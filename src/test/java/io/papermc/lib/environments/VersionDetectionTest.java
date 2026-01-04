@@ -31,6 +31,7 @@ class VersionDetectionTest {
         assertVersionIs("(MC: 1.18.1)", 18, 1, -1, -1);
         assertVersionIs("(MC: 1.17.2)", 17, 2, -1, -1);
         assertVersionIs("(MC: 1.16.3)", 16, 3, -1, -1);
+        assertVersionIs("(MC: 1.21.10)", 21, 10, -1, -1);
     }
 
     private static void assertVersionIs(final String bukkitVersion, final int mc, final int patch, final int pre, final int rc) {
