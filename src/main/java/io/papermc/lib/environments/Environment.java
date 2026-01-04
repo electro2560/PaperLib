@@ -54,7 +54,7 @@ public abstract class Environment {
     }
 
     Environment(final String bukkitVersion) {
-        Pattern versionPattern = Pattern.compile("(?i)\\(MC: (\\d)\\.(\\d+)\\.?(\\d+?)?(?: (Pre-Release|Release Candidate) )?(\\d)?\\)");
+        Pattern versionPattern = Pattern.compile("(?i)\\(MC: (\\d)\\.(\\d+)(?:\\.(\\d+))?(?: (Pre-Release|Release Candidate) (\\d+))?\\)");
         Matcher matcher = versionPattern.matcher(bukkitVersion);
         int version = 0;
         int patchVersion = 0;
