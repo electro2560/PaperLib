@@ -34,6 +34,12 @@ class VersionDetectionTest {
         assertVersionIs("(MC: 1.21.10)", 21, 10, -1, -1);
     }
 
+    @Test
+    void testUnobfuscated() {
+        assertVersionIs("(MC: 1.21.11 Unobfuscated)", 21, 11, -1, -1);
+        assertVersionIs("(MC: 1.20.10 Custom Is Fine)", 20, 10, -1, -1);
+    }
+
     private static void assertVersionIs(final String bukkitVersion, final int mc, final int patch, final int pre, final int rc) {
         assertEquals(
                 createExpectedVersions(mc, patch, pre, rc),
