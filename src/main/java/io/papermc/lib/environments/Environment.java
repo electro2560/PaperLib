@@ -41,6 +41,7 @@ public abstract class Environment {
     private final int minecraftPatchVersion;
     private final int minecraftPreReleaseVersion;
     private final int minecraftReleaseCandidateVersion;
+    private final int minecraftHotfixVersion;
 
     protected AsyncChunks asyncChunksHandler = new AsyncChunksSync();
     protected AsyncTeleport asyncTeleportHandler = new AsyncTeleportSync();
@@ -65,18 +66,40 @@ public abstract class Environment {
         int patchVersion = 0;
         int preReleaseVersion = -1;
         int releaseCandidateVersion = -1;
+        int hotfixVersion = -1;
         if (matcher.find()) {
             MatchResult matchResult = matcher.toMatchResult();
-            try {
-                version = Integer.parseInt(matchResult.group(2), 10);
-            } catch (Exception ignored) {
-            }
-            if (matchResult.groupCount() >= 3) {
+
+            if ("1".equals(matcher.group(1))) {
+                //Legacy 1.minor[.<patch>] behavior: version=minor, patchVersion=patch
                 try {
-                    patchVersion = Integer.parseInt(matchResult.group(3), 10);
+                    version = Integer.parseInt(matchResult.group(2), 10);
                 } catch (Exception ignored) {
                 }
+                if (matchResult.groupCount() >= 3) {
+                    try {
+                        patchVersion = Integer.parseInt(matchResult.group(3), 10);
+                    } catch (Exception ignored) {
+                    }
+                }
+            } else {
+                //2026+ year.release[.<hotfix>] behavior: version=year, patchVersion=release
+                try {
+                    version = Integer.parseInt(matchResult.group(1), 10);
+                } catch (Exception ignored) {
+                }
+                try {
+                    patchVersion = Integer.parseInt(matchResult.group(2), 10);
+                } catch (Exception ignored) {
+                }
+                hotfixVersion = 0;
+                if (matchResult.group(3) != null) {
+                    try {
+                        hotfixVersion = Integer.parseInt(matchResult.group(3), 10);
+                    } catch (Exception ignored) {}
+                }
             }
+
             if (matchResult.groupCount() >= 5) {
                 try {
                     final int ver = Integer.parseInt(matcher.group(5));
@@ -93,6 +116,7 @@ public abstract class Environment {
         this.minecraftPatchVersion = patchVersion;
         this.minecraftPreReleaseVersion = preReleaseVersion;
         this.minecraftReleaseCandidateVersion = releaseCandidateVersion;
+        this.minecraftHotfixVersion = hotfixVersion;
 
         // Common to all environments
         if (isVersion(13, 1)) {
@@ -165,6 +189,10 @@ public abstract class Environment {
 
     public int getMinecraftReleaseCandidateVersion() {
         return minecraftReleaseCandidateVersion;
+    }
+
+    public int getMinecraftHotfixVersion() {
+        return minecraftHotfixVersion;
     }
 
     public boolean isSpigot() {
